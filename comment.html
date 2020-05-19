@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Komentari</h1>
+    <div class="comment">
+    <input type="text" id="name" placeholder="name...">
+    <textarea id="comment" placeholder="Add a comment..."></textarea>
+    <button id="submit">Post</button>
+    </div>
+    <div class="commentSection">
+        <h2>Vas komentar</h2>
+        <div class="komentar"></div>
+    </div>
+<style>
+    h1,h2{
+        text-align: center;
+        font-family:Arial ;
+        margin: 20px 0 0 0;
+    }
+    .comment{
+        height: 200px;
+        width: 100%;
+        position: relative;
+    }
+    textarea{
+        font-family:Arial;
+        width: 100%;
+        height: 80%;
+        border: 0;
+        border: 1px solid rgba(82, 82, 82,0.8);
+    }
+    #submit{
+        display: block;
+        width: 100%;
+        height: 20%;
+        background-color: rgba(82, 82, 82, 0.616);
+        color: #fff;
+        border: 0;
+        font-family: Arial;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .commentSection{
+        width: 100%;
+        height: 100%;
+        margin-top: 30%;
+    }
+    #name{
+        border: 1px solid grey;
+        margin: 20px 0 20px 0;
+    }
+    h3{
+        font-family:sans-serif;
+    }
+    .komentar p {
+        color: grey;
+        font-family: Arial;
+    }
+    .holder{
+        height: auto;
+        border-bottom: 1px solid grey;
+    }
+    .reply{
+        font-weight: arial;
+        font-size: 10px;
+    }
+
+    .odgovor{
+        border: 0;
+        margin-bottom: 10px;
+    }
+
+    .editP{
+        border: 1px solid grey;
+        padding: 10px;
+    }
+    .vote{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-right: 5%;
+        height: auto;
+    }
+    .vote img{
+        height: 20px;
+        width: 20px;
+        align-self: center;
+    }
+    .vote p{
+        font-size: 15px;
+    }
+
+
+</style>
+<script>
+    let commentValue = document.getElementById("comment");
+    let btn = document.getElementById("submit");
+    let commSub = document.getElementsByClassName("komentar")[0];
+    let ime = document.getElementById("name");
+    let reply = document.getElementById("reply");
+    let komentar = document.getElementsByClassName("komentar")[0];
+    let num = 0;
+    let holder = document.getElementsByClassName("holder");
+
+
+    class Komentar{
+    constructor(index,outerHTML){
+       this.index = index;
+       this.outerHTML = outerHTML;
+    }
+}
+    btn.addEventListener("click",(e)=>{
+        if(ime.value === "" || commentValue.value === ""){
+            alert("Popunite prazna polja")
+        }
+        else{
+            num++;
+            komentar.innerHTML += 
+       `
+       <div class="holder" id=${num}>
+       <h3 class="name">${ime.value}</h3>
+       <p class="kometarCeo">${commentValue.value}</p>
+       <p class="reply">Reply</p>
+       <p class="delete reply">Delete the comment section</p>
+       <div class="vote">
+       <img src="https://img.icons8.com/material-sharp/24/000000/present-to-all.png"/ class="like">
+       </div>
+       </div>
+       `
+       //lajkovi
+let likeIcon = document.querySelectorAll(".like");
+let vote = document.querySelectorAll(".vote");
+function likes(){
+    let numLikes = 0;
+    numLikes++;
+    likeIcon.forEach((item)=>{
+        item.addEventListener("click",(e)=>{
+            e.target.parentElement.innerHTML += `<p>${numLikes}</p>`;
+//skladistenje lajkova
+for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+        })
+    })
+}
+likes();
+       let holder = document.getElementsByClassName("holder");
+Array.from(holder).forEach((item)=>{
+    item.addEventListener("click",(e)=>{
+//event listener na reply da se pojavi input
+      if(e.target.classList.contains("reply")){
+          e.target.parentElement.innerHTML+=
+          `
+          <input type="text" class="odgovor" placeholder="reply...">
+
+          `
+      }
+//event listener na input
+      else if(e.target.classList.contains("odgovor")){
+           e.target.addEventListener("keypress",(e)=>{
+               if(e.which===13){
+                   e.target.parentElement.innerHTML += 
+                   `
+                    <p class="editP">${e.target.value}</p>
+                    <div class="vote">
+                    <img src="https://img.icons8.com/material-sharp/24/000000/present-to-all.png"/ class="like">
+                    </div>    
+                   `
+       //lajkovi
+       let likeIcon = document.querySelectorAll(".like");
+let vote = document.querySelectorAll(".vote");
+function likes(){
+    let numLikes = 0;
+    numLikes++;
+    likeIcon.forEach((item)=>{
+        item.addEventListener("click",(e)=>{
+            e.target.parentElement.innerHTML += `<p>${numLikes}</p>`;
+//skladistenje lajkova
+for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+        })
+    })
+}
+likes();
+//petlja da nestanu odgovori
+                   let odgovor = document.getElementsByClassName("odgovor");
+                   for(var i = 0;i<odgovor.length;i++){
+                       odgovor[i].style.display="none";
+                       
+                   }
+                   for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+
+               }
+           })
+      }
+    })
+
+})
+//resetovanje polja
+       document.getElementById("comment").value = "";
+       document.getElementById("name").value = "";
+        }
+       //kraj funkcije
+       //dodavanje u storage
+       for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+       //skidanje iz storage
+       let del = document.getElementsByClassName("delete");
+       Array.from(del).forEach((item)=>{
+           item.addEventListener("click",(e)=>{
+               e.target.parentElement.remove();
+               let remove =e.target.parentElement.firstElementChild.textContent
+               let readyForRemove = JSON.stringify(remove);
+               localStorage.removeItem(remove); 
+           })
+       })
+    })
+//Kraj glavne funkcije
+
+
+
+
+
+
+
+
+
+
+
+//Pocetal funkcija nakon refreshovanja i skladistenja
+function getItems(){
+    for(var i = 0;i<localStorage.length;i++){
+        let keys = Object.keys(localStorage);
+        let get = localStorage.getItem(keys[i]);
+        let setParsed = JSON.parse(get);
+        komentar.innerHTML += `${setParsed.outerHTML}`
+    }
+}
+getItems()
+
+//Funkicja za reply i dodavanje u skladiste nakon kupljenja iz skladista
+function funkcionalnost (){
+    Array.from(holder).forEach((item)=>{
+    item.addEventListener("click",(e)=>{
+//event listener na reply da se pojavi input
+      if(e.target.classList.contains("reply")){
+          e.target.parentElement.innerHTML+=
+          `
+          <input type="text" class="odgovor" placeholder="reply...">
+          `
+      }
+//event listener na input
+      else if(e.target.classList.contains("odgovor")){
+           e.target.addEventListener("keypress",(e)=>{
+               if(e.which===13){
+                   e.target.parentElement.innerHTML += 
+                   `
+                   <p class="editP">${e.target.value}</p>
+                   <div class="vote">
+                    <img src="https://img.icons8.com/material-sharp/24/000000/present-to-all.png"/ class="like">
+                    </div>    
+                   `
+                           //lajkovi
+       let likeIcon = document.querySelectorAll(".like");
+let vote = document.querySelectorAll(".vote");
+function likes(){
+    let numLikes = 0;
+    numLikes++;
+    likeIcon.forEach((item)=>{
+        item.addEventListener("click",(e)=>{
+            e.target.parentElement.innerHTML += `<p>${numLikes}</p>`;
+//skladistenje lajkova
+for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+        })
+    })
+}
+likes();
+//petlja da nestanu odgovori
+                   let odgovor = document.getElementsByClassName("odgovor");
+                   for(var i = 0;i<odgovor.length;i++){
+                       odgovor[i].style.display="none";
+                       
+                   }
+                   for(var i = 0;i<holder.length;i++){
+        let index = holder[i].firstElementChild.textContent;
+        let outerHTML = holder[i].outerHTML
+        let objekat = new Komentar(index,outerHTML)
+       localStorage.setItem(index,JSON.stringify(objekat));
+       }
+               }
+           })
+      }
+    })
+})
+}
+funkcionalnost();
+let del = document.getElementsByClassName("delete");
+function removeStored(){
+       Array.from(del).forEach((item)=>{
+           item.addEventListener("click",(e)=>{
+               e.target.parentElement.remove();
+               let remove =e.target.parentElement.firstElementChild.textContent
+               let readyForRemove = JSON.stringify(remove);
+               localStorage.removeItem(remove); 
+           })
+       })
+}
+removeStored();
+</script>
+</body>
+</html>
